@@ -10,6 +10,7 @@
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
     'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
   ];
+  var i;
   var pinsContainer = document.querySelector('.map__pins');
   var pinsContainerWidth = pinsContainer.clientWidth;
 
@@ -20,7 +21,7 @@
   var generateOffersData = function (n) {
     var arr = [];
 
-    for (var i = 1; i <= n; i++) {
+    for (i = 1; i <= n; i++) {
       var obj = {};
       var objFeaturesArr = FEATURES.slice();
       var objFeatures = [];
@@ -69,7 +70,7 @@
   };
 
   var pinsFragment = document.createDocumentFragment();
-  for (var i = 0; i < offers.length; i++) {
+  for (i = 0; i < offers.length; i++) {
     pinsFragment.appendChild(renderPin(offers[i]));
   }
 
@@ -114,7 +115,7 @@
     var featuresContainer = cardElement.querySelector('.popup__features');
     var featuresTags = '';
     var offerFeatures = obj.offer.features;
-    for (var i = 0; i < offerFeatures.length; i++) {
+    for (i = 0; i < offerFeatures.length; i++) {
       featuresTags += '<li class="popup__feature popup__feature--' + offerFeatures[i] + '"></li>';
     }
     featuresContainer.innerHTML = featuresTags;
@@ -122,7 +123,7 @@
     // вывод фотографий в блоке через <img>
     var imgTags = '';
     var objPhotos = obj.offer.photos;
-    for (var i = 0; i < objPhotos.length; i++) {
+    for (i = 0; i < objPhotos.length; i++) {
       imgTags += '<img src="' + objPhotos[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
     }
     cardElement.querySelector('.popup__photos').innerHTML = imgTags;
@@ -131,7 +132,7 @@
   };
 
   var cardsFragment = document.createDocumentFragment();
-  for (var i = 0; i < offers.length; i++) {
+  for (i = 0; i < offers.length; i++) {
     cardsFragment.appendChild(renderCard(offers[i]));
   }
 
