@@ -214,24 +214,27 @@
     }
     priceInput.min = min;
     priceInput.placeholder = min;
+    priceInput.value = min;
   };
   typeInput.addEventListener('change', typeInputHandler);
 
   // Валидация времени въезда и выезда
-  var timeInputHandler = function () {
-    var timeValue = this.value;
-    timeInInput.value = timeOutInput.value = timeValue;
+  var timeInputHandler = function (value) {
+    timeInInput.value = timeOutInput.value = value;
   };
-  timeInInput.addEventListener('change', timeInputHandler);
-  timeOutInput.addEventListener('change', timeInputHandler);
+  timeInInput.addEventListener('change', function (evt) {
+    timeInputHandler(evt.target.value);
+  });
+  timeOutInput.addEventListener('change', function (evt) {
+    timeInputHandler(evt.target.value);
+  });
 
   // Валидация комнат и гостей
   var roomsInput = adForm.querySelector('#room_number');
   var capacityInput = adForm.querySelector('#capacity');
 
-  var roomsInputHandler = function () {
-    var rooms = this.value;
-    var maxCapacity = +rooms;
+  var roomsInputHandler = function (val) {
+    var maxCapacity = +val;
     var options = capacityInput.querySelectorAll('option');
     var optionsSortedArr = [];
 
@@ -239,7 +242,7 @@
       optionsSortedArr.push(capacityInput.querySelector('option[value="' + i + '"]'));
     }
 
-    if (rooms === '100') {
+    if (maxCapacity === 100) {
       for (i = 1; i < options.length; i++) {
         optionsSortedArr[i].disabled = true;
       }
@@ -260,5 +263,7 @@
     optionsSortedArr[0].disabled = true;
   };
 
-  roomsInput.addEventListener('change', roomsInputHandler);
+  roomsInput.addEventListener('change', function (evt) {
+    roomsInputHandler(evt.target.value);
+  });
 })();
