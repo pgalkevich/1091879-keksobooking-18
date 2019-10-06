@@ -263,7 +263,6 @@
     }
     priceInput.min = min;
     priceInput.placeholder = min;
-    priceInput.value = min;
   };
   typeInput.addEventListener('change', typeInputHandler);
 
