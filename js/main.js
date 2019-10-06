@@ -59,6 +59,7 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var renderPin = function (obj) {
     var pinElement = pinTemplate.cloneNode(true);
+    pinElement.setAttribute('tabindex', 0);
     var pinElementImg = pinElement.querySelector('img');
     pinElement.style.left = (obj.location.x - (pinElementImg.width / 2)) + 'px';
     pinElement.style.top = (obj.location.y - pinElementImg.height) + 'px';
@@ -68,21 +69,40 @@
     return pinElement;
   };
 
+  var openedCard = '';
+
+  var addPinClickListener = function (index, el) {
+    el.addEventListener('click', function () {
+      openCard(index);
+    });
+  };
+  var addPinKeydownListener = function (index, el) {
+    el.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === KEY_CODES.ENTER || evt.keyCode === KEY_CODES.SPACE) {
+        openCard(index);
+      }
+    });
+  };
+
   var pinsFragment = document.createDocumentFragment();
   for (i = 0; i < offers.length; i++) {
-    pinsFragment.appendChild(renderPin(offers[i]));
+    var pinElement = renderPin(offers[i]);
+    addPinClickListener(i, pinElement);
+    addPinKeydownListener(i, pinElement);
+    pinsFragment.appendChild(pinElement);
   }
 
-  // pinsContainer.appendChild(pinsFragment);
+  pinsContainer.appendChild(pinsFragment);
 
   // тут начинается код для карточек
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  var renderCard = function (obj) {
+  var renderCard = function (obj, index) {
     var cardElement = cardTemplate.cloneNode(true);
 
     cardElement.querySelector('.popup__title').textContent = obj.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = obj.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = obj.offer.price + '₽/ночь';
+    cardElement.setAttribute('data-id', index);
 
     // алгоритм вывода типа оффера на русском в карточку
     var objOfferType = obj.offer.type;
@@ -131,14 +151,43 @@
   };
 
   var cardsFragment = document.createDocumentFragment();
+
+  var cardEscHandler = function (evt) {
+    if (evt.keyCode === KEY_CODES.ESC) {
+      closeCard(openedCard);
+    }
+  };
+
+  var openCard = function (index) {
+    if (openedCard) {
+      openedCard.classList.add('hidden');
+    }
+    var card = document.querySelector('article[data-id="' + index + '"]');
+    card.classList.remove('hidden');
+    document.addEventListener('keydown', cardEscHandler);
+    openedCard = card;
+  };
+
+  var closeCard = function (card) {
+    card.classList.add('hidden');
+    openedCard = '';
+    document.removeEventListener('keydown', cardEscHandler);
+  };
+
   for (i = 0; i < offers.length; i++) {
-    cardsFragment.appendChild(renderCard(offers[i]));
+    var cardElement = renderCard(offers[i], i);
+    var cardElementCloseBtn = cardElement.querySelector('.popup__close');
+    cardElementCloseBtn.addEventListener('click', function (evt) {
+      var card = evt.target;
+      closeCard(card.closest('article'));
+    });
+    cardsFragment.appendChild(cardElement);
   }
 
   var cards = document.createElement('div');
   cards.classList.add('map-cards');
   cards.appendChild(cardsFragment);
-  // document.querySelector('.map__filters-container').insertAdjacentElement('beforeBegin', cards);
+  document.querySelector('.map__filters-container').insertAdjacentElement('beforeBegin', cards);
 
   // Код 4-го задания
   var KEY_CODES = {
@@ -214,7 +263,6 @@
     }
     priceInput.min = min;
     priceInput.placeholder = min;
-    priceInput.value = min;
   };
   typeInput.addEventListener('change', typeInputHandler);
 
