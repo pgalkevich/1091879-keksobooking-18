@@ -17,30 +17,33 @@
     return pinElement;
   };
 
-  var addPinClickListener = function (index, el) {
-    el.addEventListener('click', function () {
-      window.cards.openCard(index);
-    });
-  };
-  var addPinKeydownListener = function (index, el) {
-    el.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === window.utils.KEY_CODES.ENTER || evt.keyCode === window.utils.KEY_CODES.SPACE) {
+  var addPins = function (offers) {
+    var addPinClickListener = function (index, el) {
+      el.addEventListener('click', function () {
         window.cards.openCard(index);
-      }
-    });
+      });
+    };
+    var addPinKeydownListener = function (index, el) {
+      el.addEventListener('keydown', function (evt) {
+        if (evt.keyCode === window.utils.KEY_CODES.ENTER || evt.keyCode === window.utils.KEY_CODES.SPACE) {
+          window.cards.openCard(index);
+        }
+      });
+    };
+
+    var pinsFragment = document.createDocumentFragment();
+    for (var i = 0; i < offers.length; i++) {
+      var pinElement = renderPin(offers[i]);
+      addPinClickListener(i, pinElement);
+      addPinKeydownListener(i, pinElement);
+      pinsFragment.appendChild(pinElement);
+    }
+
+    pinsContainer.appendChild(pinsFragment);
   };
-
-  var pinsFragment = document.createDocumentFragment();
-  for (var i = 0; i < window.offers.length; i++) {
-    var pinElement = renderPin(window.offers[i]);
-    addPinClickListener(i, pinElement);
-    addPinKeydownListener(i, pinElement);
-    pinsFragment.appendChild(pinElement);
-  }
-
-  pinsContainer.appendChild(pinsFragment);
 
   window.pins = {
-    pinsContainerWidth: pinsContainerWidth
+    pinsContainerWidth: pinsContainerWidth,
+    addPins: addPins
   };
 })();

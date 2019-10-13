@@ -82,22 +82,25 @@
     document.removeEventListener('keydown', cardEscHandler);
   };
 
-  for (var i = 0; i < window.offers.length; i++) {
-    var cardElement = renderCard(window.offers[i], i);
-    var cardElementCloseBtn = cardElement.querySelector('.popup__close');
-    cardElementCloseBtn.addEventListener('click', function (evt) {
-      var card = evt.target;
-      closeCard(card.closest('article'));
-    });
-    cardsFragment.appendChild(cardElement);
-  }
+  var addCards = function (offers) {
+    for (var i = 0; i < offers.length; i++) {
+      var cardElement = renderCard(offers[i], i);
+      var cardElementCloseBtn = cardElement.querySelector('.popup__close');
+      cardElementCloseBtn.addEventListener('click', function (evt) {
+        var card = evt.target;
+        closeCard(card.closest('article'));
+      });
+      cardsFragment.appendChild(cardElement);
 
-  var cards = document.createElement('div');
-  cards.classList.add('map-cards');
-  cards.appendChild(cardsFragment);
-  document.querySelector('.map__filters-container').insertAdjacentElement('beforeBegin', cards);
+      var cards = document.createElement('div');
+      cards.classList.add('map-cards');
+      cards.appendChild(cardsFragment);
+      document.querySelector('.map__filters-container').insertAdjacentElement('beforeBegin', cards);
+    }
+  };
 
   window.cards = {
     openCard: openCard,
+    addCards: addCards,
   };
 })();
