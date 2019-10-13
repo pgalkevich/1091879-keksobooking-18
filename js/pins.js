@@ -7,6 +7,9 @@
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
   var renderPin = function (obj) {
     var pinElement = pinTemplate.cloneNode(true);
+    if (!obj.offer) {
+      pinElement.style.display = 'none';
+    }
     pinElement.setAttribute('tabindex', 0);
     var pinElementImg = pinElement.querySelector('img');
     pinElement.style.left = (obj.location.x - (pinElementImg.width / 2)) + 'px';
@@ -33,10 +36,14 @@
 
     var pinsFragment = document.createDocumentFragment();
     for (var i = 0; i < offers.length; i++) {
-      var pinElement = renderPin(offers[i]);
-      addPinClickListener(i, pinElement);
-      addPinKeydownListener(i, pinElement);
-      pinsFragment.appendChild(pinElement);
+      try {
+        var pinElement = renderPin(offers[i]);
+        addPinClickListener(i, pinElement);
+        addPinKeydownListener(i, pinElement);
+        pinsFragment.appendChild(pinElement);
+      } catch (err) {
+        window.map.errorHandler('Загружены некорректные данные! Ошибка: ' + err);
+      }
     }
 
     pinsContainer.appendChild(pinsFragment);
@@ -44,6 +51,6 @@
 
   window.pins = {
     pinsContainerWidth: pinsContainerWidth,
-    addPins: addPins
+    addPins: addPins,
   };
 })();

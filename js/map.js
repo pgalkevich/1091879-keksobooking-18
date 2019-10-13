@@ -28,35 +28,36 @@
   };
   getMapPinAddress(mapPinMain);
 
+  var successHandler = function (offers) {
+    window.cards.addCards(offers);
+    window.pins.addPins(offers);
+  };
+
+  var errorHandler = function (message) {
+    var body = document.querySelector('body');
+    var errorTemplate = body.querySelector('#error').content.querySelector('.error');
+    var errorDiv = errorTemplate.cloneNode(true);
+    var errorMsg = errorDiv.querySelector('.error__message');
+    var errorBtn = errorDiv.querySelector('.error__button');
+
+    var errorBtnClickHandler = function () {
+      getOffers();
+      errorDiv.remove();
+      errorBtn.removeEventListener('click', errorBtnClickHandler);
+    };
+
+    errorMsg.textContent = message;
+    body.append(errorDiv);
+
+    setTimeout(function () {
+      errorDiv.remove();
+    }, 5000);
+
+    errorBtn.addEventListener('click', errorBtnClickHandler);
+  };
+
   var getOffers = function () {
-    var url = 'https://js.dump.academy/keksobooking/data1';
-
-    var successHandler = function (offers) {
-      window.cards.addCards(offers);
-      window.pins.addPins(offers);
-    };
-    var errorHandler = function (message) {
-      var body = document.querySelector('body');
-      var errorTemplate = body.querySelector('#error').content.querySelector('.error');
-      var errorDiv = errorTemplate.cloneNode(true);
-      var errorMsg = errorDiv.querySelector('.error__message');
-      var errorBtn = errorDiv.querySelector('.error__button');
-
-      var errorBtnClickHandler = function () {
-        getOffers();
-        errorDiv.remove();
-        errorBtn.removeEventListener('click', errorBtnClickHandler);
-      };
-
-      errorMsg.textContent = message;
-      body.append(errorDiv);
-
-      setTimeout(function () {
-        errorDiv.remove();
-      }, 5000);
-
-      errorBtn.addEventListener('click', errorBtnClickHandler);
-    };
+    var url = 'https://js.dump.academy/keksobooking/data';
     window.backend.loadData(url, successHandler, errorHandler);
   };
 
@@ -75,4 +76,7 @@
       mapPinMainHandler();
     }
   });
+  window.map = {
+    errorHandler: errorHandler
+  };
 })();
