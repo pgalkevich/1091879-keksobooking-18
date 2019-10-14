@@ -42,18 +42,26 @@
     var featuresContainer = cardElement.querySelector('.popup__features');
     var featuresTags = '';
     var offerFeatures = obj.offer.features;
-    for (var k = 0; k < offerFeatures.length; k++) {
-      featuresTags += '<li class="popup__feature popup__feature--' + offerFeatures[k] + '"></li>';
+    if (offerFeatures) {
+      for (var k = 0; k < offerFeatures.length; k++) {
+        featuresTags += '<li class="popup__feature popup__feature--' + offerFeatures[k] + '"></li>';
+      }
+      featuresContainer.innerHTML = featuresTags;
+    } else {
+      featuresContainer.style.display = 'none';
     }
-    featuresContainer.innerHTML = featuresTags;
 
     // вывод фотографий в блоке через <img>
     var imgTags = '';
-    var objPhotos = obj.offer.photos;
-    for (k = 0; k < objPhotos.length; k++) {
-      imgTags += '<img src="' + objPhotos[k] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
+    if (!obj.offer.photos) {
+      var objPhotos = obj.offer.photos;
+      for (k = 0; k < objPhotos.length; k++) {
+        imgTags += '<img src="' + objPhotos[k] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
+      }
+      cardElement.querySelector('.popup__photos').innerHTML = imgTags;
+    } else {
+      cardElement.querySelector('.popup__photos').style.display = 'none';
     }
-    cardElement.querySelector('.popup__photos').innerHTML = imgTags;
 
     return cardElement;
   };
@@ -82,22 +90,29 @@
     document.removeEventListener('keydown', cardEscHandler);
   };
 
-  for (var i = 0; i < window.offers.length; i++) {
-    var cardElement = renderCard(window.offers[i], i);
-    var cardElementCloseBtn = cardElement.querySelector('.popup__close');
-    cardElementCloseBtn.addEventListener('click', function (evt) {
-      var card = evt.target;
-      closeCard(card.closest('article'));
-    });
-    cardsFragment.appendChild(cardElement);
-  }
+  var addCards = function (offers) {
+    for (var i = 0; i < offers.length; i++) {
+      try {
+        var cardElement = renderCard(offers[i], i);
+        var cardElementCloseBtn = cardElement.querySelector('.popup__close');
+        cardElementCloseBtn.addEventListener('click', function (evt) {
+          var card = evt.target;
+          closeCard(card.closest('article'));
+        });
+        cardsFragment.appendChild(cardElement);
 
-  var cards = document.createElement('div');
-  cards.classList.add('map-cards');
-  cards.appendChild(cardsFragment);
-  document.querySelector('.map__filters-container').insertAdjacentElement('beforeBegin', cards);
+        var cards = document.createElement('div');
+        cards.classList.add('map-cards');
+        cards.appendChild(cardsFragment);
+        document.querySelector('.map__filters-container').insertAdjacentElement('beforeBegin', cards);
+      } catch (err) {
+        window.map.errorHandler('Загружены некорректные данные! Ошибка: ' + err);
+      }
+    }
+  };
 
   window.cards = {
     openCard: openCard,
+    addCards: addCards,
   };
 })();
