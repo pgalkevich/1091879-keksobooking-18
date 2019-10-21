@@ -2,6 +2,7 @@
 
 (function () {
   var openedCard = '';
+  var mapCardsContainer = document.querySelector('.map__cards-container');
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var renderCard = function (obj, index) {
@@ -90,7 +91,8 @@
     document.removeEventListener('keydown', cardEscHandler);
   };
 
-  var addCards = function (offers) {
+  var updateCards = function (offers) {
+    mapCardsContainer.innerHTML = '';
     for (var i = 0; i < offers.length; i++) {
       try {
         var cardElement = renderCard(offers[i], i);
@@ -101,10 +103,10 @@
         });
         cardsFragment.appendChild(cardElement);
 
-        var cards = document.createElement('div');
-        cards.classList.add('map-cards');
-        cards.appendChild(cardsFragment);
-        document.querySelector('.map__filters-container').insertAdjacentElement('beforeBegin', cards);
+        var card = document.createElement('div');
+        card.classList.add('map-cards');
+        card.appendChild(cardsFragment);
+        mapCardsContainer.appendChild(card);
       } catch (err) {
         window.map.errorHandler('Загружены некорректные данные! Ошибка: ' + err);
       }
@@ -113,6 +115,6 @@
 
   window.cards = {
     openCard: openCard,
-    addCards: addCards,
+    updateCards: updateCards,
   };
 })();

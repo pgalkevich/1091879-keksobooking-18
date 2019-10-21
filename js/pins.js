@@ -20,7 +20,7 @@
     return pinElement;
   };
 
-  var addPins = function (offers) {
+  var updatePins = function (offers) {
     var addPinClickListener = function (index, el) {
       el.addEventListener('click', function () {
         window.cards.openCard(index);
@@ -46,11 +46,12 @@
       }
     }
 
+    pinsContainer.innerHTML = '';
     pinsContainer.appendChild(pinsFragment);
   };
 
   window.pins = {
     pinsContainerWidth: pinsContainerWidth,
-    addPins: addPins,
+    updatePins: updatePins,
   };
 })();
